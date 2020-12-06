@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label style="padding: 20px;">Categoria</label>
+        <form action="{% url 'registrar' %}" method="post">
+        {% csrf_token %}
+
+        {% for categoria in categorias %}
+            <input type="radio" name="categoria" id="{{ forloop.counter }}" value="{{ categoria.id }}">
+            <label for="{{ forloop.counter }}">{{ categoria.nombre }}</label><br>
+        {% endfor %}
+            <label style="padding: 20px;">Monto</label><br>
+            <input type="number" name="monto" id="{{ forloop.counter }}" value="{{ categoria.id }}"><br>
+        <input type="submit" value="Registrar">
+        </form>
+    </div>
+{% endblock %}

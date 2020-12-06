@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if ventas %}
+        <table style="border: 1px solid black;">
+            <tr>
+                <th>Categoria</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+            </tr>>
+        {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.categoria }}</td>
+                <td>{{ venta.monto }}</td>
+                <td>{{ venta.fecha }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No hay ventas realizadas</p>
+    {% endif %}
+{% endblock %}

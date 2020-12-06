@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        {% include "assets/style.css" %}
+    </style>
+</head>
+    <body>
+        <!-- header -->
+        <div class="w3-top">
+            <div class="w3-bar w3-white w3-card" id="myNavbar">
+                <a href="{% url 'index' %}" class="w3-bar-item w3-button w3-wide">INICIO</a>
+                <div class="w3-right w3-hide-small">
+                    <a href="{% url 'venta' %}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> VENTA </a>
+                    <a href="{% url 'reporte' %}" class="w3-bar-item w3-button"><i class="fa fa-th"></i> REPORTE </a>
+                </div>
+            </div>
+        </div>
+    <!-- Content -->
+        <div style="padding-top: 100px; padding-left: 25px;">
+            {% block content %} {% endblock %}
+        </div>
+    </body>
+</html>
