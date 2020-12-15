@@ -7,16 +7,34 @@
                 <th>Categoria</th>
                 <th>Monto</th>
                 <th>Fecha</th>
+                <th>Control</th>
             </tr>>
         {% for venta in ventas %}
             <tr>
                 <td>{{ venta.categoria }}</td>
                 <td>{{ venta.monto }}</td>
                 <td>{{ venta.fecha }}</td>
+                <td><button onclick="borrar({{ venta.id }})">Borrar</button></td>
             </tr>
         {% endfor %}
         </table>
     {% else %}
         <p>No hay ventas realizadas</p>
     {% endif %}
+
+    <script>
+        function borrar(id){
+            $.ajax({
+            url: '/borrarventa/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'id': id
+            },
+            dataType: 'json',
+            success: function (data) {
+               location.reload();
+            }
+          });
+        }
+    </script>
 {% endblock %}

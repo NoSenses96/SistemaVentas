@@ -17,10 +17,16 @@
         <div class="w3-top">
             <div class="w3-bar w3-white w3-card" id="myNavbar">
                 <a href="{% url 'index' %}" class="w3-bar-item w3-button w3-wide">INICIO</a>
-                <div class="w3-right w3-hide-small">
-                    <a href="{% url 'venta' %}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> VENTA </a>
-                    <a href="{% url 'reporte' %}" class="w3-bar-item w3-button"><i class="fa fa-th"></i> REPORTE </a>
-                </div>
+                {% if user.is_authenticated %}
+                    <label class="w3-bar-item w3-button w3-wide">User: {{ user.get_username }}</label>
+                    <a class="w3-bar-item w3-button w3-wide" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+                    <div class="w3-right w3-hide-small">
+                        <a href="{% url 'venta' %}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> VENTA </a>
+                        <a href="{% url 'reporte' %}" class="w3-bar-item w3-button"><i class="fa fa-th"></i> REPORTE </a>
+                    </div>
+                {% else %}
+                    <a class="w3-bar-item w3-button w3-wide" href="{% url 'login'%}?next={{request.path}}">Login</a>
+                {% endif %}
             </div>
         </div>
     <!-- Content -->
@@ -28,4 +34,7 @@
             {% block content %} {% endblock %}
         </div>
     </body>
+    <script>
+        {% include "assets/jquery.js" %}
+    </script>
 </html>

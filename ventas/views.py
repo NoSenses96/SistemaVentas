@@ -1,16 +1,15 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.template import loader
+from datetime import datetime
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import reverse
 from .models import Venta
 from .models import Categoria
-from datetime import datetime
 
 
-def inicio(request):
-    return render(request, 'ventas/inicio.html')
-
-
+@login_required(login_url='/accounts/login/')
 def reporte(request):
     ventas = Venta.objects.all()
     context = {
@@ -19,6 +18,7 @@ def reporte(request):
     return render(request, 'ventas/reporte.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def venta(request):
     categorias = Categoria.objects.all()
     context = {
@@ -30,11 +30,30 @@ def venta(request):
 def registrar(request):
     date = datetime.now()
     venta = Venta()
-    categorias = Categoria.objects.all()
     venta.monto = request.POST['monto']
-    venta.categoria = Categoria(request.POST['categoria'])
-    venta.fecha = date.strftime("%c")
-    if venta.save():
-        return HttpResponseRedirect(reverse('ventas/exito.html'))
+    venta.categoria = Categoria(request.POST.get('categoria', False))
+    venta.fecha = date.now()
+    venta.save()
+    return HttpResponseRedirect(reverse('reporte'))
+
+
+def registrousuario(request):
+    user = User.objects.create_user(
+        request.POST.get('nombre', False),
+        request.POST.get('correo', False),
+        request.POST.get('contrasenna', False)
+    )
+    user.save()
+
+
+def customlogin(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/venta/')
     else:
-        return HttpResponseRedirect(reverse('ventas/fallido.html'))
+        return HttpResponseRedirect('/accounts/login/')
+
+
+def borrarventa(request):
+    venta = Venta.objects.get(id=request.GET['id'])
+    venta.delete()
+    return HttpResponse('bien')
