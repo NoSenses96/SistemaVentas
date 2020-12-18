@@ -1,0 +1,50 @@
+body,h1,h2,h3,h4,h5,h6 {
+    font-family: "Raleway", sans-serif;
+}
+
+body, html {
+    height: 100%;
+    line-height: 1.8;
+}
+
+.main-content {
+    padding: 2rem;
+}
+
+form .btn {
+    font-size: 2rem;
+}
+
+table th {
+    text-align: center;
+}
+
+input[type=radio]:checked + label>img {
+  border: 1px solid #fff;
+  box-shadow: 0 0 3px 3px #86b7fe;
+}
+
+.input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.monto-group {
+    max-width: 50%;
+    margin: 0 auto 20px;
+}
+
+.monto-group input{
+    height: 100px;
+    font-size: 4rem;
+    text-align: center;
+}
+
+
+.align-center {
+    text-align: center;
+}

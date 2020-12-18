@@ -2,18 +2,31 @@
 
 {% block content %}
     <div>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label style="padding: 20px;">Categoria</label>
-        <form action="{% url 'registrar' %}" method="post">
-        {% csrf_token %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="{% url 'registrar' %}" method="post" class="align-center">
+            {% csrf_token %}
 
-        {% for categoria in categorias %}
-            <input type="radio" name="categoria" id="{{ forloop.counter }}" value="{{ categoria.id }}">
-            <label for="{{ forloop.counter }}">{{ categoria.nombre }}</label><br>
-        {% endfor %}
-            <label style="padding: 20px;">Monto</label><br>
-            <input type="number" name="monto" id="{{ forloop.counter }}" value="{{ categoria.id }}"><br>
-        <input type="submit" value="Registrar">
+            <div class="form-group">
+                {% for categoria in categorias %}
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="input-hidden form-check-input" id="{{ forloop.counter }}" name="categoria" value="{{ categoria.id }}">
+                        <label class="form-check-label" for="{{ forloop.counter }}">
+                            <img src="{{ MEDIA_URL }}{{ categoria.imagen }}">
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group monto-group">
+               <label for="{{ forloop.counter }}">Monto</label>
+               <input type="number" name="monto" class="form-control" id="{{ forloop.counter }}" placeholder="₡0000" value="{{ categoria.id }}">
+            </div>
+            <input type="submit" class="btn btn-primary" value="Registrar">
         </form>
     </div>
 {% endblock %}

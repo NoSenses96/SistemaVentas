@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib import messages
 from .models import Venta
 from .models import Categoria
 
@@ -34,7 +35,8 @@ def registrar(request):
     venta.categoria = Categoria(request.POST.get('categoria', False))
     venta.fecha = date.now()
     venta.save()
-    return HttpResponseRedirect(reverse('reporte'))
+    messages.success(request, "Your data has been saved!")
+    return HttpResponseRedirect(reverse('venta'))
 
 
 def registrousuario(request):

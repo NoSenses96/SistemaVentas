@@ -2,19 +2,19 @@
 
 {% block content %}
     {% if ventas %}
-        <table style="border: 1px solid black;">
+        <table class="table table-bordered">
             <tr>
                 <th>Categoria</th>
                 <th>Monto</th>
                 <th>Fecha</th>
-                <th>Control</th>
-            </tr>>
+                <th></th>
+            </tr>
         {% for venta in ventas %}
             <tr>
-                <td>{{ venta.categoria }}</td>
+                <td>{{ venta.categoria.nombre }}</td>
                 <td>{{ venta.monto }}</td>
                 <td>{{ venta.fecha }}</td>
-                <td><button onclick="borrar({{ venta.id }})">Borrar</button></td>
+                <td><button onclick="borrar({{ venta.id }})" class="btn btn-danger">Borrar</button></td>
             </tr>
         {% endfor %}
         </table>
@@ -25,15 +25,15 @@
     <script>
         function borrar(id){
             $.ajax({
-            url: '/borrarventa/',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'id': id
-            },
-            dataType: 'json',
-            success: function (data) {
-               location.reload();
-            }
+                url: '/borrarventa/',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'id': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                   location.reload();
+                }
           });
         }
     </script>
