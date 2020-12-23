@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="date-picker open">
+        <div class="input"></div>
+        <div class="calendar"></div>
+    </div>
+
+    <div class="repoter-container">
+        <div class="row">
+            {% if categorias %}
+                {% for categoria in categorias %}
+                    <div class="col-3">
+                        <div id="categoria-{{ categoria.id }}" class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ MEDIA_URL }}{{ categoria.imagen }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ categoria.nombre }}</h5>
+                                <p class="card-text">Monto: <span class="monto"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay ventas realizadas</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $.datepicker.regional['es'] = {
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
+            }
+
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+
+            $(".calendar").datepicker({
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1
+            });
+
+            $(document).on('click', '.date-picker .input', function (e) {
+                var $me = $(this),
+                    $parent = $me.parents('.date-picker');
+                $parent.toggleClass('open');
+            });
+
+            $(".calendar").on("change", function () {
+                let $me = $(this),
+                $selected = $me.val();
+                console.log($me.val());
+                obtenerVentas($selected);
+            });
+
+            function obtenerVentas(fecha) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/reporte-por-dia/',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'fecha': fecha
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.reporte) {
+                            Object.keys(data.reporte).forEach((idx) => {
+                                $('#categoria-' + idx + ' .monto').html(data.reporte[idx]);
+                            });
+                            $('.repoter-container').show();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

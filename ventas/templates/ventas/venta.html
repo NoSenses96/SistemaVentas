@@ -15,7 +15,7 @@
             <div class="form-group">
                 {% for categoria in categorias %}
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="input-hidden form-check-input" id="{{ forloop.counter }}" name="categoria" value="{{ categoria.id }}">
+                        <input type="radio" class="input-hidden form-check-input" id="{{ forloop.counter }}" name="categoria" value="{{ categoria.id }}" required>
                         <label class="form-check-label" for="{{ forloop.counter }}">
                             <img src="{{ MEDIA_URL }}{{ categoria.imagen }}">
                         </label>

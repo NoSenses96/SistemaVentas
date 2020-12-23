@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if ventas %}
-        <table class="table table-bordered">
+        <table id="reporte" class="table table-bordered display">
             <tr>
                 <th>Categoria</th>
                 <th>Monto</th>
@@ -13,7 +13,7 @@
             <tr>
                 <td>{{ venta.categoria.nombre }}</td>
                 <td>{{ venta.monto }}</td>
-                <td>{{ venta.fecha }}</td>
+                <td>{{ venta.fecha|date:"M d, Y" }}</td>
                 <td><button onclick="borrar({{ venta.id }})" class="btn btn-danger">Borrar</button></td>
             </tr>
         {% endfor %}
@@ -22,6 +22,12 @@
         <p>No hay ventas realizadas</p>
     {% endif %}
 
+    <div class="date-picker open">
+        <div class="input"></div>
+        <div class="calendar"></div>
+    </div>
+    <button onclick="obtenerVentas()" class="btn btn-info">Obtener Reporte</button>
+
     <script>
         function borrar(id){
             $.ajax({
@@ -29,6 +35,51 @@
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'id': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                   location.reload();
+                }
+          });
+        }
+
+        $(function() {
+          $.datepicker.regional['es'] = {
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
+          }
+
+          $.datepicker.setDefaults($.datepicker.regional['es']);
+
+          $( ".calendar" ).datepicker({
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1
+            });
+
+            $(document).on('click', '.date-picker .input', function(e){
+                var $me = $(this),
+                $parent = $me.parents('.date-picker');
+                $parent.toggleClass('open');
+            });
+
+
+            $(".calendar").on("change",function(){
+                var $me = $(this),
+                $selected = $me.val(),
+                $parent = $me.parents('.date-picker');
+                $parent.find('.input').html($selected);
+            });
+        });
+
+        function obtenerVentas(){
+            $.ajax({
+                url: '/ventasporfecha/',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'date': id
                 },
                 dataType: 'json',
                 success: function (data) {

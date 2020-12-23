@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
+from django.http import JsonResponse
 from .models import Venta
 from .models import Categoria
 
@@ -13,11 +14,42 @@ from .models import Categoria
 @login_required(login_url='/accounts/login/')
 def reporte(request):
     ventas = Venta.objects.all()
+    reporte = {}
+
+    for venta in ventas:
+        if venta.categoria.id in reporte:
+            reporte[venta.categoria.id] += venta.monto
+        else:
+            reporte[venta.categoria.id] = venta.monto
+
     context = {
         'ventas': ventas,
+        'reporte' : reporte
     }
     return render(request, 'ventas/reporte.html', context)
 
+@login_required(login_url='/accounts/login/')
+def ventas_por_dia(request):
+    context = {
+        'categorias': Categoria.objects.all(),
+    }
+    return render(request, 'ventas/ventas-por-dia.html', context)
+
+def reporte_por_dia(request):
+    if request.is_ajax and request.method == "POST":
+        fecha = datetime.strptime(request.POST.get('fecha', False), '%d/%m/%Y').date()
+        ventas = Venta.objects.filter(fecha__fecha = fecha)
+        reporte = {}
+
+        for venta in ventas:
+            if venta.categoria.id in reporte:
+                reporte[venta.categoria.id] += venta.monto
+            else:
+                reporte[venta.categoria.id] = venta.monto
+
+        return JsonResponse({"reporte": reporte}, status=200)
+    else:
+        return JsonResponse({"error": ""}, status=400)
 
 @login_required(login_url='/accounts/login/')
 def venta(request):
@@ -26,7 +58,6 @@ def venta(request):
         'categorias': categorias,
     }
     return render(request, 'ventas/venta.html', context)
-
 
 def registrar(request):
     date = datetime.now()

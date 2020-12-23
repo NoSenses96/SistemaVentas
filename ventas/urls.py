@@ -26,6 +26,8 @@ urlpatterns = [
     path('', views.customlogin, name='index'),
     path('admin/', admin.site.urls),
     path('reporte/', views.reporte, name='reporte'),
+    path('ventas-por-dia/', views.ventas_por_dia, name='ventas_por_dia'),
+    path('reporte-por-dia/', views.reporte_por_dia, name='reporte_por_dia'),
     path('venta/', views.venta, name='venta'),
     path('registrar/', views.registrar, name='registrar'),
     path('borrarventa/', views.borrarventa, name='borrarventa'),
